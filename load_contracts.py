@@ -9,7 +9,8 @@ from nltk.corpus import stopwords
 import sys
 import slate3k
 
-chars_to_remove = string.punctuation.replace("$", "").replace(".", "")  # keep the $ sign and .
+# keep the $ sign and .
+chars_to_remove = string.punctuation.replace("$", "").replace(".", "")
 remove_chars = str.maketrans(chars_to_remove, " " * len(chars_to_remove))
 
 
@@ -61,4 +62,3 @@ if __name__ == "__main__":
     x = v.transform(string).toarray()
     print(type(x), len(x))
     print(x[0].shape)
-

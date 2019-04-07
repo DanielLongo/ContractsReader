@@ -1,14 +1,18 @@
 # from io import BytesIO
 from io import StringIO
+import pdfminer
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 import os
-import sys, getopt
+import sys
+import getopt
 
-#from http://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/
-#converts pdf, returns its text content as a string
+# from http://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/
+# converts pdf, returns its text content as a string
+
+
 def convert(fname, pages=None):
     if not pages:
         pagenums = set()
@@ -29,6 +33,7 @@ def convert(fname, pages=None):
     text = output.getvalue()
     output.close
     return text
+
 
 if __name__ == "__main__":
     text = convert("./135_ActelisNetworks_COI_01072005.pdf", pages=[1])
