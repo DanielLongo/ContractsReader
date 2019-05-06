@@ -29,6 +29,15 @@ def generate_map(y, num_examples=10, filepath="./contracts/"):
         print(entry)
 
 
+def get_security_names(key="Security Name", filename="rs1 database AN.xlsx"):
+    df = pd.read_excel(filename)
+    out = pd.concat([df["File Name"], df["Security Name"], df["Number"]], axis=1)
+    out = out[np.isfinite(df["Number"])]
+    out = out.dropna(how='any')
+    out["Security Name"] = out["Security Name"].apply(preprocess_text)
+    out = out[key].unique()
+    return out
+
 
 if __name__ == "__main__":
     y = load_info_xlsx("rs1 database AN.xlsx")

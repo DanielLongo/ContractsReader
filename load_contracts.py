@@ -7,7 +7,7 @@ from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 import sys
-import slate3k
+# import slate3k
 
 # keep the $ sign and .
 chars_to_remove = string.punctuation.replace("$", "").replace(".", "")
