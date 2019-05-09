@@ -3,14 +3,16 @@ import numpy as np
 from load_contracts import preprocess_text, read_contract
 import xlrd
 
-def load_info_xlsx(filename):
+def load_info_xlsx(filename, np_array=True):
     df = pd.read_excel(filename)
     out = pd.concat([df["File Name"], df["Security Name"], df["Number"]], axis=1)
     out = out[np.isfinite(df["Number"])]
     out = out.dropna(how='any')
     out["Security Name"] = out["Security Name"].apply(preprocess_text)
     out["Number"] = out["Number"].apply("{:.20g}".format).apply(str).apply(preprocess_text)
-    return out.values
+    if np_array:
+        return out.values
+    return out
     # print(out["File Name"])
     # print("out", out)
     # print(df["Security Name"].unique())
