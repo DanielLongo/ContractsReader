@@ -7,12 +7,21 @@ from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 import sys
+from utils import is_num
 # import slate3k
 
 # keep the $ sign and .
 chars_to_remove = string.punctuation.replace("$", "").replace(".", "")
 remove_chars = str.maketrans(chars_to_remove, " " * len(chars_to_remove))
 
+def remove_periods(text): #doesn't remove decimal places
+    out = []
+    for word in text:
+        if is_num(word):
+            out += [word]
+            continue
+        out += word.split('.')
+    return out
 
 def preprocess_text(text):
     text = text.lower()
@@ -25,6 +34,10 @@ def preprocess_text(text):
     tokens = [ps.stem(word) for word in text.split(" ")]
     lemmatizer = WordNetLemmatizer()
     tokens = [lemmatizer.lemmatize(word) for word in tokens]
+
+    tokens = list(filter(lambda a: a != '', tokens))
+    tokens = remove_periods(tokens)
+    
     return " ".join(tokens)
     # text = text.strip()
     # stop_words = set(stopwords.words('english'))

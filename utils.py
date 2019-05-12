@@ -12,6 +12,13 @@ import getopt
 # from http://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/
 # converts pdf, returns its text content as a string
 
+def is_num(x):
+    x = x.strip('$')
+    try:
+        float(x)
+    except ValueError:
+        return False
+    return True
 
 def convert(fname, pages=None):
     if not pages:
