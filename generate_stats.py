@@ -8,9 +8,9 @@ from utils import revert_secuirty_names
 
 def generate_stats(IV_intro_text):
     _, names = get_names(IV_intro_text)
-    types = get_types(names)
-    nums = get_num_of_shares(IV_intro_text, names)
-    d = {"Security Name": names, "Security Type": types, "Number": nums}
+    nums, names_used = get_num_of_shares(IV_intro_text, names)
+    types = get_types(names_used)
+    d = {"Security Name": names_used, "Security Type": types, "Number": nums}
     df = pd.DataFrame(d)
     df = revert_secuirty_names(df)
     return df
@@ -25,5 +25,5 @@ if __name__ == "__main__":
     print("generated")
     print(stats)
     print("actual")
-    print(get_map_from_file(filename, ["Security Name", "Number"]))
+    print(get_map_from_file(filename, ["Number", "Security Name", "Security Type"]))
 

@@ -34,9 +34,16 @@ def get_names(text):
 
 def get_num_of_shares(text, names):
     out = []
+    names_used = []
     for name in names:
-        out += [get_closest_num(text, name, less=True)]
-    return out
+        # print("cur name", name)
+        if name in " ".join(text):
+            names_used += [name]
+            out += [get_closest_num(text, name, less=True)]
+        else:
+            pass
+            # out += [None]
+    return out, names_used
 
 
 def get_types(names):
@@ -82,4 +89,5 @@ def get_IV_intro_text(filename, beginning_intro_triggers, end_intro_triggers):
         beginning_of_IV = end_of_IV_intro - 100
     print("beginning", beginning_of_IV, "end", end_of_IV_intro)
     IV_intro_text = text[beginning_of_IV:end_of_IV_intro]
+    # print(" ".join(IV_intro_text))
     return IV_intro_text
