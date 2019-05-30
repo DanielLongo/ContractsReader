@@ -6,7 +6,8 @@ import xlrd
 
 def load_info_xlsx(filename, np_array=True):
     df = pd.read_excel(filename)
-    out = pd.concat([df["File Name"], df["Security Name"], df["Number"]], axis=1)
+    # print("DF", df.columns)
+    out = pd.concat([df["File Name"], df["Security Name"], df["Number"], df["Security Type"]], axis=1)
     out = out[np.isfinite(df["Number"])]
     out = out.dropna(how='any')
     out["Security Name"] = out["Security Name"].apply(preprocess_text)

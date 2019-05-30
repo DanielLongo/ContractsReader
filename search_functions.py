@@ -1,5 +1,6 @@
 from load_contracts import read_contract
 from load_info import get_security_names
+from manage_triggers import get_proccessed_triggers
 from utils import find_target, get_closest_num, get_closest_string, find_loc
 
 Failures = [
@@ -50,16 +51,18 @@ def get_types(names):
     types = []
     for name in names:
         if "common" in name:
-            types += ["common"]
+            types += ["Common"]
         elif "prefer" in name:
-            types += ["preferred"]
+            types += ["Preferred"]
         else:
             print("name doesn't contain common or prefer:", "".join(name))
             types += ["No type found"]
     return types
 
 
-def get_IV_intro_text(filename, beginning_intro_triggers, end_intro_triggers):
+def get_IV_intro_text(filename, beginning_intro_triggers_filename="Beginning_IV", end_intro_triggers_filename="End_IV_intro"):
+    beginning_intro_triggers = get_proccessed_triggers(beginning_intro_triggers_filename)
+    end_intro_triggers = get_proccessed_triggers(end_intro_triggers_filename)
     text = read_contract(filename)
     text = text.split(" ")
     #     print("text", text)
