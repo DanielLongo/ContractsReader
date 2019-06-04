@@ -16,9 +16,7 @@ def eval_files(filenames):
     avg_percent_security_name_valid = sum(percent_security_name_valid) / len(percent_security_name_valid)
     print("Avg percent_security_name_valid", avg_percent_security_name_valid)
 
-    print(stats_performance)
-    flattened_stats_performance = [y for x in stats_performance for y in x]
-    print(flattened_stats_performance)
+    flattened_stats_performance = [z for x in stats_performance for y in x for z in y]
     avg_stats_perfomance = sum(flattened_stats_performance) / len(flattened_stats_performance)
     print("Avg stats_performance", avg_stats_perfomance)
 
@@ -88,7 +86,7 @@ def eval_security_stats(generated, y):
 if __name__ == "__main__":
     # filename = "contracts/135_ActelisNetworks_COI_01072005.pdf"
     # filename = "contracts/17445_955DREAMS_COI_01232012.pdf"
-    filenames = get_filenames(10)
+    filenames = get_filenames(30)
     eval_files(filenames)
     # for filename in filenames
     # IV_intro_text = get_IV_intro_text(filename)
