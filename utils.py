@@ -1,6 +1,7 @@
 # from io import BytesIO
 import warnings
 from io import StringIO
+from random import shuffle
 import pdfminer
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
@@ -10,9 +11,49 @@ import os
 import sys
 import getopt
 
-
 # from http://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/
 # converts pdf, returns its text content as a string
+import load_info
+
+
+def get_filepath(target_filename):
+    dropbox_path = "/Users/DanielLongo/Dropbox/VC RA Avinika Narayan/Contracts project/coi/Done OCR'd/"
+    for root, dirs, files in os.walk(dropbox_path):
+        for dir in dirs:
+            for filename in os.listdir(dropbox_path + dir):
+                if filename == target_filename:
+                    return dropbox_path + dir + "/" + filename
+
+
+def get_filenames(n, shuffle_filenames=True):
+    y = load_info.load_info_xlsx("rs1 database AN.xlsx", np_array=False)
+    filenames = list(y["File Name"])
+    assert (len(filenames) > 1), "No filenames found"
+    if shuffle_filenames:
+        shuffle(filenames)
+    out = []
+    for filename in filenames:
+        cur_filepath = get_filepath(filename)
+        if cur_filepath != None:
+            out += [cur_filepath]
+            if len(out) == n:
+                return out
+    print("Insufficient filenames")
+
+def check_security_names_equal(a, b):
+    # checks if security names are the same just slightly different variations
+    a = a.replace(" stock", "")
+    b = b.replace(" stock", "")
+    return a == b
+
+
+def get_index_security_names_equal(target, names):
+    for i in range(len(names)):
+        if check_security_names_equal(names[i], target):
+            return i
+    print("kjhsdfkljhsdkjfhsdkKJHFSKLJHSDFKLJHS")
+    return -1
+
 
 def is_num(x):
     x = x.strip('$')
@@ -153,5 +194,6 @@ def get_closest_num(values, target, less, min=-1, max=1e10000, any=False):
 
 
 if __name__ == "__main__":
-    text = convert("./135_ActelisNetworks_COI_01072005.pdf", pages=[1])
-    print(text)
+    # text = convert("./135_ActelisNetworks_COI_01072005.pdf", pages=[1])
+    # print(text)
+    get_filenames(10)

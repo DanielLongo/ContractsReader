@@ -81,6 +81,7 @@ def get_IV_intro_text(filename, beginning_intro_triggers_filename="Beginning_IV"
         print("failed", filename)
         print(text)
         return None
+    # TODO: Write bounds for is None
     assert (beginning_of_IV_intro is not None), "Invalid info file " + " ".join(text) + filename
 
     #     assert(end_of_IV_intro != None), "END Sequence not found"
