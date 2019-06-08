@@ -40,6 +40,7 @@ def get_filenames(n, shuffle_filenames=True):
                 return out
     print("Insufficient filenames")
 
+
 def check_security_names_equal(a, b):
     # checks if security names are the same just slightly different variations
     a = a.replace(" stock", "")
@@ -51,7 +52,6 @@ def get_index_security_names_equal(target, names):
     for i in range(len(names)):
         if check_security_names_equal(names[i], target):
             return i
-    print("kjhsdfkljhsdkjfhsdkKJHFSKLJHSDFKLJHS")
     return -1
 
 
@@ -62,6 +62,15 @@ def is_num(x):
     except ValueError:
         return False
     return True
+
+def get_num(x):
+    x = x.strip('$')
+    try:
+        return float(x)
+    except ValueError:
+        print("Not a number")
+        return False
+
 
 
 def convert(fname, pages=None):
@@ -191,6 +200,37 @@ def get_closest_num(values, target, less, min=-1, max=1e10000, any=False):
             return float(values[i].strip("$"))
     print("No num", target, "index", index)
     return None
+
+
+def get_names_from_text(text, names):
+    assert(type(text) == list), "Text is a list of strings"
+    text = " ".join(text)
+    used_names = {}
+    for name in names:
+        try:
+            index = text.index(name)
+            used_names[name] = index
+        except ValueError:  # Substring not found
+            pass
+    used_names = sorted(used_names.items(), key=lambda kv: kv[1])
+    return used_names
+
+
+def get_nums_from_text(text, min=-1, max=sys.maxsize):
+    assert (type(text) == list), "Text is a list of strings"
+    numbers = []
+    print("tehsdkfhsdkjfhksljh", " ".join(text))
+    for word in text:
+        print(word, text.index(word))
+        if is_num(word):
+            val = get_num(word)
+            if min < val < max:
+                print("HIT", text.index(word))
+                numbers += [(val, text.index(word))]
+    return numbers
+
+
+
 
 
 if __name__ == "__main__":

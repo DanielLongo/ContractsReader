@@ -1,14 +1,17 @@
 import pandas as pd
-
 from load_info import get_map_from_file
 from manage_triggers import get_proccessed_triggers
-from search_functions import get_names, get_types, get_num_of_shares, get_IV_intro_text
+from search_functions import get_names, get_types, get_num_of_shares, get_IV_intro_text, get_text
 from utils import revert_secuirty_names
+
 
 def generate_stats(filename):
     # for filename in filenames:
-    IV_intro_text = get_IV_intro_text(filename)
-    generated = generate_stats_from_text(IV_intro_text)
+    # IV_intro_text = get_IV_intro_text(filename)
+    # generated = generate_stats_from_text(IV_intro_text)
+
+    text = get_text(filename)
+    generated = generate_stats_from_text(text)
     return generated
 
 

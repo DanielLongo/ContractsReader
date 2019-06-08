@@ -26,7 +26,6 @@ def eval_single_file(generated, y, print_results=True):
     security_name_invalid = 0
     stats_performance = []
     for security_name in generated["Security Name"]:
-        print("cur name", security_name)
         cur_security_name_valid = False
         for cur_security_name in list(y["Security Name"]):
             if check_security_names_equal(security_name, cur_security_name):
@@ -84,12 +83,5 @@ def eval_security_stats(generated, y):
 
 
 if __name__ == "__main__":
-    # filename = "contracts/135_ActelisNetworks_COI_01072005.pdf"
-    # filename = "contracts/17445_955DREAMS_COI_01232012.pdf"
     filenames = get_filenames(30)
     eval_files(filenames)
-    # for filename in filenames
-    # IV_intro_text = get_IV_intro_text(filename)
-    # generated = generate_stats_from_text(IV_intro_text)
-    # y = get_map_from_file(filename, ["Security Name", "Security Type", "Number"])
-    # eval(generated, y)
