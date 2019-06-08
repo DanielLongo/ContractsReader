@@ -1,8 +1,10 @@
 # from io import BytesIO
+import itertools
 import warnings
 from io import StringIO
 from random import shuffle
 import pdfminer
+from pandas.tests.extension.numpy_.test_numpy_nested import np
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -63,6 +65,7 @@ def is_num(x):
         return False
     return True
 
+
 def get_num(x):
     x = x.strip('$')
     try:
@@ -70,7 +73,6 @@ def get_num(x):
     except ValueError:
         print("Not a number")
         return False
-
 
 
 def convert(fname, pages=None):
@@ -203,12 +205,12 @@ def get_closest_num(values, target, less, min=-1, max=1e10000, any=False):
 
 
 def get_names_from_text(text, names):
-    assert(type(text) == list), "Text is a list of strings"
+    assert (type(text) == list), "Text is a list of strings"
     text = " ".join(text)
     used_names = {}
     for name in names:
         try:
-            index = text.index(name)
+            index = text.index(name)  # returns index of first occurrence
             used_names[name] = index
         except ValueError:  # Substring not found
             pass
@@ -216,21 +218,72 @@ def get_names_from_text(text, names):
     return used_names
 
 
+def subsetSums(arr, l, r, sum=0):
+    # from https://www.geeksforgeeks.org/print-sums-subsets-given-set/
+    # Print current subset
+    out = []
+    if l > r:
+        return sum
+
+    # Subset including arr[l]
+    out += [subsetSums(arr, l + 1, r, sum + arr[l])]
+
+    # Subset excluding arr[l]
+    out += [subsetSums(arr, l + 1, r, sum)]
+    return out
+
+
+def remove_sums(nums_w_index):
+    # removes values that are sums of values
+    nums = [num[0] for num in nums_w_index]
+    n = len(nums)
+    sums = subsetSums(nums, 0, n - 1)
+    sums = np.asarray(sums).flatten()
+    sums = sums.tolist()
+    out = []
+    for num in nums_w_index:
+        if sums.count(num[0]) == 1:
+            out += [num]
+    return out
+
+
 def get_nums_from_text(text, min=-1, max=sys.maxsize):
     assert (type(text) == list), "Text is a list of strings"
+    str_text = " ".join(text)
     numbers = []
-    print("tehsdkfhsdkjfhksljh", " ".join(text))
     for word in text:
-        print(word, text.index(word))
+        # print(word, text.index(word))
         if is_num(word):
             val = get_num(word)
             if min < val < max:
-                print("HIT", text.index(word))
-                numbers += [(val, text.index(word))]
+                numbers += [(val, str_text.index(word))]
     return numbers
 
 
+def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
+    min_index = targets[0][1] - buffer
+    max_index = targets[-1][1] + buffer
+    nums_in_range = []
+    for num in nums:
+        if min_index < num[1] < max_index:
+            nums_in_range += [num]
 
+    if len(targets) > len(nums_in_range):
+        print('MORE TARGETS THAN NUMS')
+        return
+
+    out = []
+    i = 0
+    nums_in_range = remove_sums(nums_in_range)
+    # TODO: Track diff to ensure not getting larger
+    for target in targets:
+        while i < len(nums_in_range):
+            if abs(nums_in_range[i][1] - target[1]) < max_diff:
+                out += [(target[0], nums_in_range[i][0])]
+                i += 1
+                break
+            i += 1
+    return out
 
 
 if __name__ == "__main__":

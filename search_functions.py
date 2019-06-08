@@ -1,7 +1,8 @@
 from load_contracts import read_contract
 from load_info import get_security_names
 from manage_triggers import get_proccessed_triggers
-from utils import find_target, get_closest_num, get_closest_string, find_loc, get_names_from_text, get_nums_from_text
+from utils import find_target, get_closest_num, get_closest_string, find_loc, get_names_from_text, get_nums_from_text, \
+    match_nums_with_targets
 
 Failures = [
     "/Users/DanielLongo/Dropbox/VC RA Avinika Narayan/Contracts project/coi/Done OCR'd/ActiveSemi International/148_ActiveSemi_COI_11082010.pdf",
@@ -40,10 +41,8 @@ def get_names(text):
     return indicies, types
 
 
-def get_num_of_shares(text, names, buffer=10):
+def get_num_of_shares(text, names, buffer=50):
     # buffer is the num of words possible between endpoint names and nums
-    # TODO: work out discrepencies between number of names and number of nums
-    # TODO: match up nums with share names
     used_names = get_names_from_text(text, names)
     start = used_names[0][1] - buffer
     end = used_names[-1][1] + buffer
@@ -51,11 +50,18 @@ def get_num_of_shares(text, names, buffer=10):
         start = 0
     if end > len(text):
         end = len(text)
-    print("start", start, "end", end)
-    text = text[start: end]
+    # text = (" ".join(text)[start: end]).split(" ")
+    # print("text", text[300:500])
     numbers = get_nums_from_text(text, min=100)
-    print("names new", used_names, len(used_names))
-    print("nums", numbers, len(numbers))
+    pairs = match_nums_with_targets(numbers, used_names)
+    names_out = []
+    nums_out = []
+    for name, num in pairs:
+        names_out.append(name)
+        nums_out.append(num)
+    print("nums_out", nums_out)
+    print("names_out", names_out)
+    return nums_out, names_out
 
 
 # def get_num_of_shares(text, names):
@@ -73,8 +79,10 @@ def get_num_of_shares(text, names, buffer=10):
 #         else:
 #             pass
 #             # out += [None]
+#     print("out", out)
+#     print("names_used", names_used)
 #     return out, names_used
-
+#
 
 def get_types(names):
     types = []
