@@ -83,5 +83,5 @@ def eval_security_stats(generated, y):
 
 
 if __name__ == "__main__":
-    filenames = get_filenames(30)
+    filenames = get_filenames(3)
     eval_files(filenames)

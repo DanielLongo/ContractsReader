@@ -219,6 +219,7 @@ def get_names_from_text(text, names):
 
 
 def subsetSums(arr, l, r, sum=0):
+    # print("subset Sums start")
     # from https://www.geeksforgeeks.org/print-sums-subsets-given-set/
     # Print current subset
     out = []
@@ -230,6 +231,7 @@ def subsetSums(arr, l, r, sum=0):
 
     # Subset excluding arr[l]
     out += [subsetSums(arr, l + 1, r, sum)]
+    # print("subset Sums finish")
     return out
 
 
@@ -248,6 +250,7 @@ def remove_sums(nums_w_index):
 
 
 def get_nums_from_text(text, min=-1, max=sys.maxsize):
+    # TODO: Remove nums with values following decimal point
     assert (type(text) == list), "Text is a list of strings"
     str_text = " ".join(text)
     numbers = []
@@ -261,13 +264,15 @@ def get_nums_from_text(text, min=-1, max=sys.maxsize):
 
 
 def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
+    print("match nums start")
     min_index = targets[0][1] - buffer
     max_index = targets[-1][1] + buffer
     nums_in_range = []
     for num in nums:
         if min_index < num[1] < max_index:
             nums_in_range += [num]
-
+    # TODO: Handle when too many nums in range
+    print("Length of nums in range", len(nums_in_range))
     if len(targets) > len(nums_in_range):
         print('MORE TARGETS THAN NUMS')
         return
@@ -283,10 +288,11 @@ def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
                 i += 1
                 break
             i += 1
+    print("match nums finish")
     return out
 
 
 if __name__ == "__main__":
     # text = convert("./135_ActelisNetworks_COI_01072005.pdf", pages=[1])
     # print(text)
-    get_filenames(10)
+    get_filenames(3)
