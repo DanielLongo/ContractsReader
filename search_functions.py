@@ -43,9 +43,13 @@ def get_names(text):
 
 def get_num_of_shares(text, names, buffer=50):
     # buffer is the num of words possible between endpoint names and nums
-    used_names = get_names_from_text(text, names)
-    start = used_names[0][1] - buffer
-    end = used_names[-1][1] + buffer
+    try:
+        used_names = get_names_from_text(text, names)
+        start = used_names[0][1] - buffer
+        end = used_names[-1][1] + buffer
+    except IndexError:
+        print(used_names)
+        return None, None
     if start < 0:
         start = 0
     if end > len(text):
@@ -61,8 +65,8 @@ def get_num_of_shares(text, names, buffer=50):
     for name, num in pairs:
         names_out.append(name)
         nums_out.append(num)
-    print("nums_out", nums_out)
-    print("names_out", names_out)
+    # print("nums_out", nums_out)
+    # print("names_out", names_out)
     return nums_out, names_out
 
 

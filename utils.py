@@ -253,6 +253,7 @@ def remove_sums(nums_w_index):
 
 def get_num_substring(x):
     # if x contains a numeric substring will return the number, else returns the string
+    # TODO: ensure works properly with decimal points
     start = 0
     end = -1
     first = True
@@ -264,48 +265,42 @@ def get_num_substring(x):
                 first = False
                 continue
         elif not first:
-            print("found", x[start:i])
             return x[start:i]
 
-    print("new", x[start:])
     return x[start:]
 
-
-# def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
-#     assert (type(text) == list), "Text is a list of strings"
-#     str_text = " ".join(text)
-#     numbers = []
-#     for word in text:
-#         print(word, text.index(word))
-#         num_from_word = get_num_substring(word)
-#         print("num", num_from_word)
-#         if is_num(num_from_word):
-#             val = get_num(num_from_word)
-#             if min < val < max:
-#                 if decimal or float(val).is_integer():  # checks if values behind decimal place
-#                     numbers += [(val, str_text.index(word))]
-#     return numbers
 
 def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
     assert (type(text) == list), "Text is a list of strings"
     str_text = " ".join(text)
     numbers = []
     for word in text:
-        print(word, text.index(word))
-        # num_from_word = get_num_substring(word)
-        # print("num", num_from_word)
-        if is_num(word):
-            val = get_num(word)
+        num_from_word = get_num_substring(word)
+        if is_num(num_from_word):
+            val = get_num(num_from_word)
             if min < val < max:
                 if decimal or float(val).is_integer():  # checks if values behind decimal place
                     numbers += [(val, str_text.index(word))]
     return numbers
 
+# def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
+#     assert (type(text) == list), "Text is a list of strings"
+#     str_text = " ".join(text)
+#     numbers = []
+#     for word in text:
+#         # print(word, text.index(word))
+#         # num_from_word = get_num_substring(word)
+#         # print("num", num_from_word)
+#         if is_num(word):
+#             val = get_num(word)
+#             if min < val < max:
+#                 if decimal or float(val).is_integer():  # checks if values behind decimal place
+#                     numbers += [(val, str_text.index(word))]
+#     return numbers
+
 def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
     min_index = targets[0][1] - buffer
     max_index = targets[-1][1] + buffer
-    print("All nums", nums)
-    print("max index", max_index)
     nums_in_range = []
     for num in nums:
         if min_index < num[1] < max_index:
@@ -317,15 +312,11 @@ def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
 
     out = []
     i = 0
-    print("Nums in range", nums_in_range)
-    print("names", targets)
     if len(nums_in_range) > len(targets):
         if len(nums_in_range) > 15:  # takes too long to run
             print("skipped")
             return None
-        print("A", len(nums_in_range))
         nums_in_range = remove_sums(nums_in_range)
-        print("B")
     # print("Length of nums after sums removed", len(nums_in_range))
     # print("Length of targets", len(targets))
     if len(nums_in_range) == len(targets):
@@ -334,8 +325,6 @@ def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
         print("No MATCH")
         return
     # prev_diff = 9999
-    print("nums", nums_in_range)
-    print("targets", targets)
     for target in targets:
         while i < len(nums_in_range):
             diff = abs(nums_in_range[i][1] - target[1])
@@ -347,7 +336,6 @@ def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
             #     out += [None]
             #     i += 1
             i += 1
-    print("match nums finish")
     return out
 
 

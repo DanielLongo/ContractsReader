@@ -6,10 +6,12 @@ from utils import check_security_names_equal, get_index_security_names_equal, ge
 def eval_files(filenames):
     percent_security_name_valid = []
     stats_performance = []
+    successful_run = []
     for filename in filenames:
         generated = generate_stats(filename)
         y = get_map_from_file(filename, ["Security Name", "Security Type", "Number"])
-        cur_percent_security_name_valid, cur_stats_performance = eval_single_file(generated, y, print_results=False)
+        cur_percent_security_name_valid, cur_stats_performance, cur_successful_run = eval_single_file(generated, y, print_results=False)
+        successful_run += [cur_successful_run]
         if cur_percent_security_name_valid != None and cur_stats_performance != None:
             percent_security_name_valid += [cur_percent_security_name_valid]
             stats_performance += [cur_stats_performance]
@@ -19,17 +21,20 @@ def eval_files(filenames):
     flattened_stats_performance = [z for x in stats_performance for y in x for z in y]
     avg_stats_perfomance = sum(flattened_stats_performance) / len(flattened_stats_performance)
     print("Avg stats_performance", avg_stats_perfomance)
+    avg_successful_run = sum(successful_run)/len(successful_run)
+    print("Avg successful run", avg_successful_run)
 
 
 def eval_single_file(generated, y, print_results=True):
     if generated is None:
-        return None, None
+        return None, None, False
     security_name_valid = 0
     security_name_invalid = 0
     stats_performance = []
     for security_name in generated["Security Name"]:
         cur_security_name_valid = False
         for cur_security_name in list(y["Security Name"]):
+            # cur is real
             if check_security_names_equal(security_name, cur_security_name):
                 cur_security_name_valid = True
         if cur_security_name_valid:
@@ -43,7 +48,7 @@ def eval_single_file(generated, y, print_results=True):
                 print("index", index)
                 print("generated", generated)
                 print("y", y)
-                return None, None
+                return None, None, False
             stats_performance += [cur_stats_performance]
             stats_performance += [cur_stats_performance]
         else:
@@ -57,14 +62,14 @@ def eval_single_file(generated, y, print_results=True):
     except ZeroDivisionError:
         # TODO: Investigate cause of ZeroDivisionError
         print("Zero Division error")
-        return None, None
+        return None, None, False
     if print_results:
         print("Security Name Score", str(percent_security_name_valid) + "% |", "valid:", security_name_valid,
             "invalid:", security_name_invalid)
         print("Stats Score", str(percent_stats_valid) + "% |", "valid:", sum(flattened_stats_performance), "invalid",
             len(flattened_stats_performance) - sum(flattened_stats_performance))
 
-    return percent_security_name_valid, stats_performance
+    return percent_security_name_valid, stats_performance, True
 
 
 def eval_security_stats(generated, y):
@@ -85,5 +90,6 @@ def eval_security_stats(generated, y):
 
 
 if __name__ == "__main__":
-    filenames = get_filenames(1)
+    filenames = get_filenames(600)
+    # filenames = ["/Users/DanielLongo/Dropbox/VC RA Avinika Narayan/Contracts project/coi/Done OCR'd/Veralight/veralight_inc072806.pdf"]
     eval_files(filenames)
