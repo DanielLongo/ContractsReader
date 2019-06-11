@@ -7,6 +7,7 @@ from utils import revert_secuirty_names
 
 def generate_stats(filename):
     # filename = "/Users/DanielLongo/Dropbox/VC RA Avinika Narayan/Contracts project/coi/Done OCR'd/MapR Technologies/13767_MapRTechnologies_COI_06252014.pdf"
+    filename = "/Users/DanielLongo/Dropbox/VC RA Avinika Narayan/Contracts project/coi/Done OCR'd/Veralight/veralight_inc072806.pdf"
     # for filename in filenames:
     # IV_intro_text = get_IV_intro_text(filename)
     # generated = generate_stats_from_text(IV_intro_text)
@@ -19,6 +20,8 @@ def generate_stats(filename):
 def generate_stats_from_text(IV_intro_text):
     _, names = get_names(IV_intro_text)
     nums, names_used = get_num_of_shares(IV_intro_text, names)
+    if nums is None and names_used is None:
+        return None
     types = get_types(names_used)
     d = {"Security Name": names_used, "Security Type": types, "Number": nums}
     df = pd.DataFrame(d)

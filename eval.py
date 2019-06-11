@@ -22,6 +22,8 @@ def eval_files(filenames):
 
 
 def eval_single_file(generated, y, print_results=True):
+    if generated is None:
+        return None, None
     security_name_valid = 0
     security_name_invalid = 0
     stats_performance = []
@@ -83,5 +85,5 @@ def eval_security_stats(generated, y):
 
 
 if __name__ == "__main__":
-    filenames = get_filenames(3)
+    filenames = get_filenames(1)
     eval_files(filenames)

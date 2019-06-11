@@ -52,10 +52,12 @@ def get_num_of_shares(text, names, buffer=50):
         end = len(text)
     # text = (" ".join(text)[start: end]).split(" ")
     # print("text", text[300:500])
-    numbers = get_nums_from_text(text, min=100)
+    numbers = get_nums_from_text(text, min=10000)
     pairs = match_nums_with_targets(numbers, used_names)
     names_out = []
     nums_out = []
+    if pairs is None:
+        return None, None
     for name, num in pairs:
         names_out.append(name)
         nums_out.append(num)

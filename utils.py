@@ -13,6 +13,7 @@ import os
 import sys
 import getopt
 
+warnings.filterwarnings('error', category=UnicodeWarning)
 # from http://stanford.edu/~mgorkove/cgi-bin/rpython_tutorials/
 # converts pdf, returns its text content as a string
 import load_info
@@ -236,6 +237,7 @@ def subsetSums(arr, l, r, sum=0):
 
 
 def remove_sums(nums_w_index):
+    # TODO: Get better sum algorithm
     # removes values that are sums of values
     nums = [num[0] for num in nums_w_index]
     n = len(nums)
@@ -249,44 +251,101 @@ def remove_sums(nums_w_index):
     return out
 
 
-def get_nums_from_text(text, min=-1, max=sys.maxsize):
-    # TODO: Remove nums with values following decimal point
+def get_num_substring(x):
+    # if x contains a numeric substring will return the number, else returns the string
+    start = 0
+    end = -1
+    first = True
+    for i in range(len(x)):
+        char = x[i]
+        if char.isdigit():
+            if first:
+                start = i
+                first = False
+                continue
+        elif not first:
+            print("found", x[start:i])
+            return x[start:i]
+
+    print("new", x[start:])
+    return x[start:]
+
+
+# def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
+#     assert (type(text) == list), "Text is a list of strings"
+#     str_text = " ".join(text)
+#     numbers = []
+#     for word in text:
+#         print(word, text.index(word))
+#         num_from_word = get_num_substring(word)
+#         print("num", num_from_word)
+#         if is_num(num_from_word):
+#             val = get_num(num_from_word)
+#             if min < val < max:
+#                 if decimal or float(val).is_integer():  # checks if values behind decimal place
+#                     numbers += [(val, str_text.index(word))]
+#     return numbers
+
+def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
     assert (type(text) == list), "Text is a list of strings"
     str_text = " ".join(text)
     numbers = []
     for word in text:
-        # print(word, text.index(word))
+        print(word, text.index(word))
+        # num_from_word = get_num_substring(word)
+        # print("num", num_from_word)
         if is_num(word):
             val = get_num(word)
             if min < val < max:
-                numbers += [(val, str_text.index(word))]
+                if decimal or float(val).is_integer():  # checks if values behind decimal place
+                    numbers += [(val, str_text.index(word))]
     return numbers
 
-
 def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
-    print("match nums start")
     min_index = targets[0][1] - buffer
     max_index = targets[-1][1] + buffer
+    print("All nums", nums)
+    print("max index", max_index)
     nums_in_range = []
     for num in nums:
         if min_index < num[1] < max_index:
             nums_in_range += [num]
-    # TODO: Handle when too many nums in range
-    print("Length of nums in range", len(nums_in_range))
+    # print("Length of nums in range", len(nums_in_range))
     if len(targets) > len(nums_in_range):
         print('MORE TARGETS THAN NUMS')
         return
 
     out = []
     i = 0
-    nums_in_range = remove_sums(nums_in_range)
-    # TODO: Track diff to ensure not getting larger
+    print("Nums in range", nums_in_range)
+    print("names", targets)
+    if len(nums_in_range) > len(targets):
+        if len(nums_in_range) > 15:  # takes too long to run
+            print("skipped")
+            return None
+        print("A", len(nums_in_range))
+        nums_in_range = remove_sums(nums_in_range)
+        print("B")
+    # print("Length of nums after sums removed", len(nums_in_range))
+    # print("Length of targets", len(targets))
+    if len(nums_in_range) == len(targets):
+        print("IT'S A MATCH", len(nums_in_range))
+    else:
+        print("No MATCH")
+        return
+    # prev_diff = 9999
+    print("nums", nums_in_range)
+    print("targets", targets)
     for target in targets:
         while i < len(nums_in_range):
-            if abs(nums_in_range[i][1] - target[1]) < max_diff:
+            diff = abs(nums_in_range[i][1] - target[1])
+            if diff < max_diff:
                 out += [(target[0], nums_in_range[i][0])]
                 i += 1
                 break
+            # if diff > prev_diff:
+            #     out += [None]
+            #     i += 1
             i += 1
     print("match nums finish")
     return out
