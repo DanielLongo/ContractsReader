@@ -283,6 +283,7 @@ def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
                     numbers += [(val, str_text.index(word))]
     return numbers
 
+
 # def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
 #     assert (type(text) == list), "Text is a list of strings"
 #     str_text = " ".join(text)

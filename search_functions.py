@@ -70,6 +70,26 @@ def get_num_of_shares(text, names, buffer=50):
     return nums_out, names_out
 
 
+def get_original_issue_price(text, names, buffer=30):
+    loc = find_loc(text, ["riginal issue pric"], allow_contains=True)
+    text = text[loc:]
+    used_names = get_names_from_text(text, names)
+    numbers = get_nums_from_text(text, min=0, max=5, decimal=True)
+    pairs = match_nums_with_targets(numbers, used_names)
+    names_out = []
+    nums_out = []
+    if pairs is None:
+        print("NA")
+        return None, None
+    for name, num in pairs:
+        names_out.append(name)
+        nums_out.append(num)
+    print("nums_out", nums_out)
+    print("names_out", names_out)
+    return nums_out, names_out
+
+
+
 # def get_num_of_shares(text, names):
 #     out = []
 #     names_used = []

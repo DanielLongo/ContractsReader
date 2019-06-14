@@ -90,6 +90,6 @@ def eval_security_stats(generated, y):
 
 
 if __name__ == "__main__":
-    filenames = get_filenames(600)
+    filenames = get_filenames(3)
     # filenames = ["/Users/DanielLongo/Dropbox/VC RA Avinika Narayan/Contracts project/coi/Done OCR'd/Veralight/veralight_inc072806.pdf"]
     eval_files(filenames)
