@@ -4,7 +4,8 @@ import warnings
 from io import StringIO
 from random import shuffle
 import pdfminer
-from pandas.tests.extension.numpy_.test_numpy_nested import np
+# from pandas.tests.extension.numpy_.test_numpy_nested import np
+import numpy as np
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams

@@ -9,9 +9,9 @@ Failures = [
 ]
 
 
-def get_text(filename):
+def get_text(filename, stem=True):
     # TODO: place this function elsewhere
-    text = read_contract(filename)
+    text = read_contract(filename, stem=stem)
     text = text.split(" ")
     return text
 

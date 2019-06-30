@@ -8,13 +8,11 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 import sys
 from utils import is_num
+
+
 # import slate3k
 
-# keep the $ sign and .
-chars_to_remove = string.punctuation.replace("$", "").replace(".", "")
-remove_chars = str.maketrans(chars_to_remove, " " * len(chars_to_remove))
-
-def remove_periods(text): #doesn't remove decimal places
+def remove_periods(text):  # doesn't remove decimal places
     out = []
     for word in text:
         if is_num(word):
@@ -23,21 +21,30 @@ def remove_periods(text): #doesn't remove decimal places
         out += word.split('.')
     return out
 
-def preprocess_text(text):
+
+def preprocess_text(text, stem=True):
     text = text.lower()
     text = text.replace("\n", "")
     text = text.replace(". ", " ")
     text = text.replace(",", "")
     text = text.encode('ascii', errors='ignore').decode('utf-8')
+
+    # keep the $ sign and .
+    chars_to_remove = string.punctuation.replace("$", "").replace(".", "")
+    remove_chars = str.maketrans(chars_to_remove, " " * len(chars_to_remove))
+
     text = text.translate(remove_chars)
-    ps = PorterStemmer()
-    tokens = [ps.stem(word) for word in text.split(" ")]
+    if stem:
+        ps = PorterStemmer()
+        tokens = [ps.stem(word) for word in text.split(" ")]
+    else:
+        tokens = text.split(" ")
     lemmatizer = WordNetLemmatizer()
     tokens = [lemmatizer.lemmatize(word) for word in tokens]
 
     tokens = list(filter(lambda a: a != '', tokens))
     tokens = remove_periods(tokens)
-    
+
     return " ".join(tokens)
     # text = text.strip()
     # stop_words = set(stopwords.words('english'))
@@ -51,15 +58,15 @@ def preprocess_text(text):
     # return tokens#, tokens
 
 
-def read_contract(filename):
+def read_contract(filename, stem=True):
     file = open(filename, "rb")
     read_file = PyPDF2.PdfFileReader(file)
     num_pages = read_file.getNumPages()
     final_string = ""
     for i in range(num_pages):
         text = convert(filename, pages=[i])
-        string = preprocess_text(text)
-        final_string += string + " "
+        cur_string = preprocess_text(text, stem=stem)
+        final_string += cur_string + " "
     # final = " ".join(final_string)
     return final_string
 

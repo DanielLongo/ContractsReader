@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-from load_contracts import preprocess_text, read_contract
+# from load_contracts import preprocess_text, read_contract
+from load_contracts import *
 import xlrd
 
 
