@@ -10,13 +10,15 @@ def add_trigger(trigger, filename):
             f.write("%s\n" % trigger)
 
 def get_raw_triggers(filename):
-    f = open("./triggers/" + filename, "r")
+    f = open("../triggers/" + filename, "r")
+    # f = open("./triggers/" + filename, "r")
     triggers = [x.strip("\n") for x in f]
     return triggers
 
-def get_proccessed_triggers(filename):
+def get_proccessed_triggers(filename, preproccess=True):
     triggers = get_raw_triggers(filename)
-    triggers = [preprocess_text(trigger) for trigger in triggers]
+    if preproccess:
+        triggers = [preprocess_text(trigger) for trigger in triggers]
     triggers = [trigger.split(" ") for trigger in triggers]
     return triggers
 

@@ -3,7 +3,8 @@ import numpy as np
 # from load_contracts import preprocess_text, read_contract
 from load_contracts import *
 import xlrd
-
+from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 
 def load_info_xlsx(filename, np_array=True):
     df = pd.read_excel(filename)
@@ -35,14 +36,43 @@ def generate_map(y, num_examples=10, filepath="./contracts/"):
         print(entry)
 
 
-def get_security_names(key="Security Name", filename="rs1 database AN.xlsx"):
+def get_security_names(key="Security Name", filename="~/Desktop/ContractsProject/rs1 database AN.xlsx", stem=True):
     df = pd.read_excel(filename)
     out = pd.concat([df["File Name"], df["Security Name"], df["Number"]], axis=1)
     out = out[np.isfinite(df["Number"])]
     out = out.dropna(how='any')
-    out["Security Name"] = out["Security Name"].apply(preprocess_text)
+    out["Security Name"] = out["Security Name"]
+    # out = out.apply(preprocess_text, stem=stem)
+    # out = preprocess_text(out, stem=stem)
+    # print(out)
+    out["Security Name"] = out["Security Name"].apply(preprocess_text, stem=stem)
     out = out[key].unique()
     return out
+
+def preprocess_text(text, stem=True):
+    text = text.lower()
+    text = text.replace("\n", "")
+    text = text.replace(". ", " ")
+    text = text.replace(",", "")
+    text = text.encode('ascii', errors='ignore').decode('utf-8')
+
+    # keep the $ sign and .
+    chars_to_remove = string.punctuation.replace("$", "").replace(".", "")
+    remove_chars = str.maketrans(chars_to_remove, " " * len(chars_to_remove))
+
+    text = text.translate(remove_chars)
+    if stem:
+        ps = PorterStemmer()
+        tokens = [ps.stem(word) for word in text.split(" ")]
+        lemmatizer = WordNetLemmatizer()
+        tokens = [lemmatizer.lemmatize(word) for word in tokens]
+    else:
+        tokens = text.split(" ")
+
+    tokens = list(filter(lambda a: a != '', tokens))
+    # tokens = remove_periods(tokens)
+
+    return " ".join(tokens)
 
 
 def get_map_from_file(filename, keys):

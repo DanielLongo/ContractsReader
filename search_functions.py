@@ -16,8 +16,8 @@ def get_text(filename, stem=True):
     return text
 
 
-def get_names(text):
-    unsplit_names = get_security_names()
+def get_names(text, stem=True):
+    unsplit_names = get_security_names(stem=stem)
     names = [name.split(" ") for name in unsplit_names]
     indicies = []
     types = []

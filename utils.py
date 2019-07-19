@@ -30,7 +30,7 @@ def get_filepath(target_filename):
 
 
 def get_filenames(n, shuffle_filenames=True):
-    y = load_info.load_info_xlsx("rs1 database AN.xlsx", np_array=False)
+    y = load_info.load_info_xlsx("~/Desktop/ContractsProject/rs1 database AN.xlsx", np_array=False)
     filenames = list(y["File Name"])
     assert (len(filenames) > 1), "No filenames found"
     if shuffle_filenames:
@@ -152,23 +152,29 @@ def find_target(text, target, allow_contains=True):
     target_loc = 0
     indicies = []
     start_index = 0
+    between = 0
+    between_max = 1
     for i in range(len(text)):
         word = text[i]
-        #         print("target_loc", target_loc)
-        if word == target[target_loc] or (allow_contains and word in target[target_loc]):
+        if word == target[target_loc] or (allow_contains and target[target_loc] in word):
+            # print(word, target[target_loc])
             if target_loc == 0:  # marks start of sequence
                 start_index = i
             target_loc += 1
             if target_loc == len(target):
                 indicies += [start_index]
                 target_loc = 0
-        elif word == target[0] or (allow_contains and word in target[0]):
+        elif word == target[0] or (allow_contains and target[0] in word):
             target_loc = 1
         else:
             if target_loc > 0:
+
+                between += 1
+                if between > between_max:
+                    between = 0
                 # reset just incase ababcd
-                i -= (target_loc - 1)
-            target_loc = 0
+                    i -= (target_loc - 1)
+                    target_loc = 0
     return indicies
 
 
@@ -255,6 +261,9 @@ def remove_sums(nums_w_index):
 def get_num_substring(x):
     # if x contains a numeric substring will return the number, else returns the string
     # TODO: ensure works properly with decimal points
+
+    if is_num(x.strip("$")):
+        return x.strip("$")
     start = 0
     end = -1
     first = True
@@ -275,13 +284,15 @@ def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
     assert (type(text) == list), "Text is a list of strings"
     str_text = " ".join(text)
     numbers = []
+    loc = 0
     for word in text:
+        loc += 1
         num_from_word = get_num_substring(word)
         if is_num(num_from_word):
             val = get_num(num_from_word)
             if min < val < max:
                 if decimal or float(val).is_integer():  # checks if values behind decimal place
-                    numbers += [(val, str_text.index(word))]
+                    numbers += [(val, str_text.index(word), loc)]
     return numbers
 
 
