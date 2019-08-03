@@ -1,7 +1,6 @@
 import pandas as pd
 from load_info import get_map_from_file
-from manage_triggers import get_proccessed_triggers
-from search_functions import get_names, get_types, get_num_of_shares, get_IV_intro_text, get_text, \
+from features_extract.search_functions import get_names, get_types, get_num_of_shares, get_IV_intro_text, get_text, \
     get_original_issue_price
 from utils import revert_secuirty_names
 
@@ -9,6 +8,7 @@ from utils import revert_secuirty_names
 def generate_stats(filename):
     print("filename", filename)
     text = get_text(filename)
+    print("text", " ".join(text))
     generated = generate_stats_from_text(text)
     return generated
 
@@ -16,11 +16,12 @@ def generate_stats(filename):
 def generate_stats_from_text(text):
     _, names = get_names(text)
     nums, names_used = get_num_of_shares(text, names)
-    original_issue_prices, names_used = get_original_issue_price(text, names)
-    if nums is None and names_used is None:
+    # original_issue_prices, names_used = get_original_issue_price(text, names)
+    if nums is None or names_used is None:
         return None
     types = get_types(names_used)
-    d = {"Security Name": names_used, "Security Type": types, "Number": nums, "Original Issue Price": original_issue_prices}
+    # d = {"Security Name": names_used, "Security Type": types, "Number": nums, "Original Issue Price": original_issue_prices}
+    d = {"Security Name": names_used, "Security Type": types, "Number": nums}
     df = pd.DataFrame(d)
     df = revert_secuirty_names(df)
     return df

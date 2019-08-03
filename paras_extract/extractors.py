@@ -1,7 +1,7 @@
 from load_contracts import preprocess_text, read_contract
 from manage_triggers import get_proccessed_triggers
-from search_functions import get_text, get_names, get_num_of_shares
-from utils import find_loc, get_closest_string, get_names_from_text, get_nums_from_text
+from features_extract.search_functions import get_names
+from utils import find_loc, get_names_from_text, get_nums_from_text
 from itertools import product
 
 def get_board_of_directors_paras(doc_text):

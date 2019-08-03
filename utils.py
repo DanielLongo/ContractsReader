@@ -172,7 +172,7 @@ def find_target(text, target, allow_contains=True):
                 between += 1
                 if between > between_max:
                     between = 0
-                # reset just incase ababcd
+                    # reset just incase ababcd
                     i -= (target_loc - 1)
                     target_loc = 0
     return indicies
@@ -311,32 +311,35 @@ def get_nums_from_text(text, min=-1, max=sys.maxsize, decimal=False):
 #                     numbers += [(val, str_text.index(word))]
 #     return numbers
 
-def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
+def match_nums_with_targets(nums, targets, buffer=300, max_diff=200):
     min_index = targets[0][1] - buffer
     max_index = targets[-1][1] + buffer
+
     nums_in_range = []
     for num in nums:
         if min_index < num[1] < max_index:
             nums_in_range += [num]
     # print("Length of nums in range", len(nums_in_range))
+    if len(nums_in_range) > 15:  # takes too long to run
+        print("skipped")
+        return None
+    else:
+        nums_in_range = remove_sums(nums_in_range)
+
     if len(targets) > len(nums_in_range):
-        print('MORE TARGETS THAN NUMS')
+        print('MORE  TARGETS THAN NUMS')
+        # print("targets", targets)
+        # print("Nums in range", nums_in_range)
         return
 
     out = []
     i = 0
-    if len(nums_in_range) > len(targets):
-        if len(nums_in_range) > 15:  # takes too long to run
-            print("skipped")
-            return None
-        nums_in_range = remove_sums(nums_in_range)
-    # print("Length of nums after sums removed", len(nums_in_range))
-    # print("Length of targets", len(targets))
-    if len(nums_in_range) == len(targets):
-        print("IT'S A MATCH", len(nums_in_range))
-    else:
-        print("No MATCH")
-        return
+
+    # if len(nums_in_range) == len(targets):
+    #     print("IT'S A MATCH", len(nums_in_range))
+    # else:
+    #     return
+    #     print("No MATCH")
     # prev_diff = 9999
     for target in targets:
         while i < len(nums_in_range):
@@ -349,6 +352,10 @@ def match_nums_with_targets(nums, targets, buffer=100, max_diff=200):
             #     out += [None]
             #     i += 1
             i += 1
+    if len(out) != len(targets):
+        # print("Unsuccessful match", out, targets)
+        pass
+    # print("SUCCESSFUL", out)
     return out
 
 

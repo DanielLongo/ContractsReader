@@ -48,7 +48,7 @@ def get_num_of_shares(text, names, buffer=50):
         start = used_names[0][1] - buffer
         end = used_names[-1][1] + buffer
     except IndexError:
-        print(used_names)
+        print("Index error in ger num of shares")
         return None, None
     if start < 0:
         start = 0
@@ -72,6 +72,7 @@ def get_num_of_shares(text, names, buffer=50):
 
 def get_original_issue_price(text, names, buffer=30):
     loc = find_loc(text, ["riginal issue pric"], allow_contains=True)
+    print("LOC", loc)
     text = text[loc:]
     used_names = get_names_from_text(text, names)
     numbers = get_nums_from_text(text, min=0, max=5, decimal=True)
